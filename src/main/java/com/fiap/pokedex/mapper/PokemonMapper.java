@@ -1,11 +1,12 @@
-
 package com.fiap.pokedex.mapper;
 
 import com.fiap.pokedex.dto.PokemonApiDTO;
 import com.fiap.pokedex.dto.PokemonDTO;
 import com.fiap.pokedex.enums.TipoEnum;
+import com.fiap.pokedex.models.Habilidade;
 import com.fiap.pokedex.models.Pokemon;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PokemonMapper {
@@ -42,7 +43,8 @@ public class PokemonMapper {
                 dto.defesaEspecial(),
                 dto.velocidade(),
                 dto.spriteUrl(),
-                dto.tipos()
+                dto.tipos(),
+                new ArrayList<>() // o PokemonDTO não carrega habilidades
         );
     }
 
@@ -72,6 +74,14 @@ public class PokemonMapper {
                 ))
                 .toList();
 
+        List<Habilidade> habilidades = dto.abilities().stream()
+                .map(a -> new Habilidade(
+                        extrairIdDaUrl(a.ability().url()),
+                        a.ability().name(),
+                        a.is_hidden()
+                ))
+                .toList();
+
         String imagem = dto.sprites()
                 .other()
                 .officialArtwork()
@@ -90,7 +100,17 @@ public class PokemonMapper {
                 defesaEspecial,
                 velocidade,
                 imagem,
-                tipos
+                tipos,
+                habilidades
         );
+    }
+
+    // "https://pokeapi.co/api/v2/ability/65/" -> 65
+    private static int extrairIdDaUrl(String url) {
+        String semBarraFinal = url.endsWith("/")
+                ? url.substring(0, url.length() - 1)
+                : url;
+        String id = semBarraFinal.substring(semBarraFinal.lastIndexOf('/') + 1);
+        return Integer.parseInt(id);
     }
 }

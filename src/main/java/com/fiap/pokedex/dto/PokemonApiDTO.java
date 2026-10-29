@@ -1,4 +1,3 @@
-
 package com.fiap.pokedex.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -46,7 +45,8 @@ public record PokemonApiDTO(
     ) {}
 
     public record AbilityInfoDTO(
-            String name
+            String name,
+            String url
     ) {}
 
     public record SpritesDTO(
